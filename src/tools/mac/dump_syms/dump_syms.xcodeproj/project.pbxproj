@@ -887,6 +887,8 @@
 /* Begin PBXProject section */
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "dump_syms" */;
 			compatibilityVersion = "Xcode 3.1";
 			developmentRegion = English;
@@ -1225,7 +1227,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8B3102D411F0D60300FCF3E4 /* BreakpadDebug.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = ../../..;
+				SDKROOT = "";
 			};
 			name = Debug;
 		};
@@ -1233,7 +1238,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8B3102D511F0D60300FCF3E4 /* BreakpadRelease.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = ../../..;
+				SDKROOT = "";
 			};
 			name = Release;
 		};
@@ -1617,6 +1625,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PREPROCESSOR_DEFINITIONS = HAVE_MACH_O_NLIST_H;
+				GCC_VERSION = "";
 				PRODUCT_NAME = dump_syms;
 			};
 			name = Debug;

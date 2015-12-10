@@ -243,7 +243,7 @@ SuperFatArch* DumpSymbols::FindBestMatchForArchitecture(
   for (vector<SuperFatArch>::iterator it = object_files_.begin();
        it != object_files_.end();
        ++it) {
-    if (it->cputype == cpu_type && it->cpusubtype == cpu_subtype)
+    if ((int)it->cputype == cpu_type && (int)it->cpusubtype == cpu_subtype)
       return &*it;
   }
 
