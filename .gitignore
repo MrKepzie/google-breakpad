@@ -75,3 +75,8 @@ src/third_party/protobuf
 src/tools/gyp
 
 *libchromeshell.so*
+
+*build*
+*DerivedData*
+*.xcworkspace*
+*.xcuserdatad*
