@@ -61,6 +61,11 @@ AM_CFLAGS += -fPIC
 AM_CXXFLAGS += -fPIC
 endif
 
+if WINDOWS_HOST
+# don't have stab.h, don't build stabs support
+AM_CPPFLAGS += -DNO_STABS_SUPPORT
+endif
+
 # Specify include paths for ac macros
 ACLOCAL_AMFLAGS = -I m4
 
@@ -321,6 +326,12 @@ bin_PROGRAMS += \
 endif
 endif LINUX_HOST
 
+if WINDOWS_HOST
+if !DISABLE_TOOLS
+bin_PROGRAMS += \
+       src/tools/windows/dump_syms_dwarf/dump_syms
+endif
+endif
 
 ## Tests
 if !DISABLE_PROCESSOR
@@ -618,6 +629,24 @@ src_tools_linux_md2core_minidump_2_core_unittest_LDADD = \
 	$(PTHREAD_CFLAGS) $(PTHREAD_LIBS)
 
 endif LINUX_HOST
+
+if WINDOWS_HOST
+if !DISABLE_TOOLS
+src_tools_windows_dump_syms_dwarf_dump_syms_SOURCES = \
+       src/common/dwarf_cfi_to_module.cc \
+       src/common/dwarf_cu_to_module.cc \
+       src/common/dwarf_line_to_module.cc \
+       src/common/language.cc \
+       src/common/module.cc \
+       src/common/dwarf/bytereader.cc \
+       src/common/dwarf/dwarf2diehandler.cc \
+       src/common/dwarf/dwarf2reader.cc \
+       src/common/pecoff/dump_symbols.cc \
+       src/common/pecoff/pecoffutils.cc \
+       src/common/pecoff/pecoff_file_id.cc \
+       src/tools/windows/dump_syms_dwarf/dump_syms.cc
+endif !DISABLE_TOOLS
+endif WINDOWS_HOST
 
 if !DISABLE_PROCESSOR
 src_processor_address_map_unittest_SOURCES = \
