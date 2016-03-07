@@ -397,8 +397,9 @@ void CrashGenerationServer::HandleReadingState() {
     EnterStateImmediately(IPC_SERVER_STATE_READ_DONE);
     return;
   }
-
+#ifdef _DEBUG
   assert(!CheckForIOIncomplete(success));
+#endif
   EnterStateImmediately(IPC_SERVER_STATE_DISCONNECTING);
 }
 
@@ -472,8 +473,9 @@ void CrashGenerationServer::HandleWritingState() {
     EnterStateImmediately(IPC_SERVER_STATE_WRITE_DONE);
     return;
   }
-
+#ifdef _DEBUG
   assert(!CheckForIOIncomplete(success));
+#endif
   EnterStateImmediately(IPC_SERVER_STATE_DISCONNECTING);
 }
 
@@ -543,7 +545,9 @@ void CrashGenerationServer::HandleReadingAckState() {
       }
     }
   } else {
+#ifdef _DEBUG
     assert(!CheckForIOIncomplete(success));
+#endif
   }
 
   EnterStateImmediately(IPC_SERVER_STATE_DISCONNECTING);
