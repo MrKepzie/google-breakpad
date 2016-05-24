@@ -85,7 +85,7 @@ static bool IsClientRequestValid(const ProtocolMessage& msg) {
           msg.assert_info != NULL);
 }
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 static bool CheckForIOIncomplete(bool success) {
   // We should never get an I/O incomplete since we should not execute this
   // unless the operation has finished and the overlapped event is signaled. If
@@ -397,9 +397,8 @@ void CrashGenerationServer::HandleReadingState() {
     EnterStateImmediately(IPC_SERVER_STATE_READ_DONE);
     return;
   }
-#ifdef _DEBUG
+
   assert(!CheckForIOIncomplete(success));
-#endif
   EnterStateImmediately(IPC_SERVER_STATE_DISCONNECTING);
 }
 
@@ -473,9 +472,8 @@ void CrashGenerationServer::HandleWritingState() {
     EnterStateImmediately(IPC_SERVER_STATE_WRITE_DONE);
     return;
   }
-#ifdef _DEBUG
+
   assert(!CheckForIOIncomplete(success));
-#endif
   EnterStateImmediately(IPC_SERVER_STATE_DISCONNECTING);
 }
 
@@ -545,9 +543,7 @@ void CrashGenerationServer::HandleReadingAckState() {
       }
     }
   } else {
-#ifdef _DEBUG
     assert(!CheckForIOIncomplete(success));
-#endif
   }
 
   EnterStateImmediately(IPC_SERVER_STATE_DISCONNECTING);
