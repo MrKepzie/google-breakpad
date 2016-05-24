@@ -1,6 +1,6 @@
 // -*- mode: c++ -*-
 
-// Copyright (c) 2011, Google Inc.
+// Copyright (c) 2011 Google Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,52 +29,31 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// dump_symbols.h: Read debugging information from a PECOFF file, and write
-// it out as a Breakpad symbol file.
+// symbol_upload.h: helper functions for linux symbol upload tool.
 
-#ifndef COMMON_PECOFF_DUMP_SYMBOLS_H__
-#define COMMON_PECOFF_DUMP_SYMBOLS_H__
+#ifndef COMMON_LINUX_SYMBOL_UPLOAD_H_
+#define COMMON_LINUX_SYMBOL_UPLOAD_H_
 
-#include <iostream>
 #include <string>
-#include <vector>
 
-#include "common/symbol_data.h"
 #include "common/using_std_string.h"
 
 namespace google_breakpad {
+namespace sym_upload {
 
-class Module;
+typedef struct {
+  string symbolsPath;
+  string uploadURLStr;
+  string proxy;
+  string proxy_user_pwd;
+  string version;
+  bool success;
+} Options;
 
-struct DumpOptions {
-  DumpOptions(SymbolData symbol_data, bool handle_inter_cu_refs)
-      : symbol_data(symbol_data),
-        handle_inter_cu_refs(handle_inter_cu_refs) {
-  }
+// Starts upload to symbol server with options.
+void Start(Options* options);
 
-  SymbolData symbol_data;
-  bool handle_inter_cu_refs;
-};
-
-// Find all the debugging information in OBJ_FILE, an PECOFF executable
-// or shared library, and write it to SYM_STREAM in the Breakpad symbol
-// file format.
-// If OBJ_FILE has been stripped but contains a .gnu_debuglink section,
-// then look for the debug file in DEBUG_DIRS.
-// SYMBOL_DATA allows limiting the type of symbol data written.
-bool WriteSymbolFile(const string &obj_file,
-                     const std::vector<string>& debug_dirs,
-                     const DumpOptions& options,
-                     std::ostream &sym_stream);
-
-// As above, but simply return the debugging information in MODULE
-// instead of writing it to a stream. The caller owns the resulting
-// Module object and must delete it when finished.
-bool ReadSymbolData(const string& obj_file,
-                    const std::vector<string>& debug_dirs,
-                    const DumpOptions& options,
-                    Module** module);
-
+}  // namespace sym_upload
 }  // namespace google_breakpad
 
-#endif  // COMMON_PECOFF_DUMP_SYMBOLS_H__
+#endif  // COMMON_LINUX_SYMBOL_UPLOAD_H_

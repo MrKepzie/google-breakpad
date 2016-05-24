@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Google Inc.
+// Copyright (c) 2016, Google Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -26,27 +26,18 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// pecoff_file_id.h: Return a unique identifier for a file
-//
 
-#ifndef COMMON_PECOFF_PECOFF_FILE_ID_H__
-#define COMMON_PECOFF_PECOFF_FILE_ID_H__
+#ifndef GOOGLE_BREAKPAD_COMMON_STDIO_WRAPPER_H
+#define GOOGLE_BREAKPAD_COMMON_STDIO_WRAPPER_H
 
-#include <stddef.h>
-#include <stdint.h>
+#include <stdio.h>
 
-namespace google_breakpad {
+#if defined(_MSC_VER) && MSC_VER < 1900
+#include <basetsd.h>
 
-static const size_t kMDGUIDSize = 16;
+#define snprintf _snprintf
+typedef SSIZE_T ssize_t;
+#endif
 
-class PeCoffFileID {
- public:
-  static bool PeCoffFileIdentifierFromMappedFile(const void* base,
-                                                 uint8_t identifier[kMDGUIDSize],
-                                                 uint32_t* age);
-};
 
-}  // namespace google_breakpad
-
-#endif  // COMMON_PECOFF_PECOFF_FILE_ID_H__
+#endif  // GOOGLE_BREAKPAD_COMMON_STDIO_WRAPPER_H
