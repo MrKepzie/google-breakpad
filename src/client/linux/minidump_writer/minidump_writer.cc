@@ -821,6 +821,7 @@ class MinidumpWriter {
       { "stepping",  0, false },
       { "cpu family", 0, false },
 #endif
+      { 0, 0, false},
     };
 
     // processor_architecture should always be set, do this first
@@ -849,13 +850,14 @@ class MinidumpWriter {
       const char* field;
       while (reader->GetNextField(&field)) {
         bool is_first_entry = true;
-        for (CpuInfoEntry& entry : cpu_info_table) {
-          if (!is_first_entry && entry.found) {
+
+        for (CpuInfoEntry* entry = &cpu_info_table[0]; entry->info_name != NULL; ++entry) {
+          if (!is_first_entry && entry->found) {
             // except for the 'processor' field, ignore repeated values.
             continue;
           }
           is_first_entry = false;
-          if (!my_strcmp(field, entry.info_name)) {
+          if (!my_strcmp(field, entry->info_name)) {
             size_t value_len;
             const char* value = reader->GetValueAndLen(&value_len);
             if (value_len == 0)
@@ -865,8 +867,8 @@ class MinidumpWriter {
             if (my_read_decimal_ptr(&val, value) == value)
               continue;
 
-            entry.value = static_cast<int>(val);
-            entry.found = true;
+            entry->value = static_cast<int>(val);
+            entry->found = true;
           }
         }
 
@@ -882,8 +884,8 @@ class MinidumpWriter {
     }
 
     // make sure we got everything we wanted
-    for (const CpuInfoEntry& entry : cpu_info_table) {
-      if (!entry.found) {
+    for (CpuInfoEntry* entry = &cpu_info_table[0]; entry->info_name != NULL; ++entry) {
+      if (!entry->found) {
         return false;
       }
     }
@@ -919,6 +921,7 @@ class MinidumpWriter {
       { "CPU variant", 'x', 20, 4 },
       { "CPU part", 'x', 4, 12 },
       { "CPU revision", 'd', 0, 4 },
+      { 0, 0, 0, 0}
     };
 
     // The ELF hwcaps are listed in the "Features" entry as textual tags.
@@ -951,6 +954,7 @@ class MinidumpWriter {
 #elif defined(__aarch64__)
       // No hwcaps on aarch64.
 #endif
+      {0, 0}
     };
 
     // processor_architecture should always be set, do this first
@@ -1019,15 +1023,15 @@ class MinidumpWriter {
           new(allocator) ProcCpuInfoReader(fd);
       const char* field;
       while (reader->GetNextField(&field)) {
-        for (const CpuIdEntry& entry : cpu_id_entries) {
-          if (my_strcmp(entry.field, field) != 0)
+        for (CpuIdEntry* entry = &cpu_id_entries[0]; entry->field != NULL; ++entry) {
+          if (my_strcmp(entry->field, field) != 0)
             continue;
           uintptr_t result = 0;
           const char* value = reader->GetValue();
           const char* p = value;
           if (value[0] == '0' && value[1] == 'x') {
             p = my_read_hex_ptr(&result, value+2);
-          } else if (entry.format == 'x') {
+          } else if (entry->format == 'x') {
             p = my_read_hex_ptr(&result, value);
           } else {
             p = my_read_decimal_ptr(&result, value);
@@ -1035,8 +1039,8 @@ class MinidumpWriter {
           if (p == value)
             continue;
 
-          result &= (1U << entry.bit_length)-1;
-          result <<= entry.bit_lshift;
+          result &= (1U << entry->bit_length)-1;
+          result <<= entry->bit_lshift;
           sys_info->cpu.arm_cpu_info.cpuid |=
               static_cast<uint32_t>(result);
         }
@@ -1098,9 +1102,9 @@ class MinidumpWriter {
               tag_len = strlen(tag);
               value_len = 0;
             }
-            for (const CpuFeaturesEntry& entry : cpu_features_entries) {
-              if (tag_len == strlen(entry.tag) &&
-                  !memcmp(tag, entry.tag, tag_len)) {
+            for (CpuFeaturesEntry* entry = &cpu_features_entries[0]; entry->tag != NULL; ++entry) {
+              if (tag_len == strlen(entry->tag) &&
+                  !memcmp(tag, entry->tag, tag_len)) {
                 sys_info->cpu.arm_cpu_info.elf_hwcaps |= entry.hwcaps;
                 break;
               }
