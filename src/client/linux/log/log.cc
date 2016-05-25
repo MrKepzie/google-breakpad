@@ -50,7 +50,7 @@ const int kAndroidCrashLogId = 4;  // From LOG_ID_CRASH in log.h.
 const char kAndroidLogTag[] = "google-breakpad";
 
 bool g_crash_log_initialized = false;
-AndroidLogBufferWriteFunc g_android_log_buf_write = nullptr;
+AndroidLogBufferWriteFunc g_android_log_buf_write = 0;
 
 }  // namespace
 

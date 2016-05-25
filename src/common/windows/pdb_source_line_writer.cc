@@ -136,7 +136,7 @@ bool CreateDiaDataSourceInstance(CComPtr<IDiaDataSource> &data_source) {
   // We can try loading the DLL corresponding to the #included DIA SDK, but
   // the DIA headers don't provide a version. Lets try to figure out which DIA
   // version we're compiling against by comparing CLSIDs.
-  const wchar_t *msdia_dll = nullptr;
+  const wchar_t *msdia_dll = 0;
   if (CLSID_DiaSource == _uuidof(DiaSource100)) {
     msdia_dll = L"msdia100.dll";
   } else if (CLSID_DiaSource == _uuidof(DiaSource110)) {
