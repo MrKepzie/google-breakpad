@@ -64,8 +64,14 @@ CompilationUnit::CompilationUnit(const string& path,
       is_split_dwarf_(false), dwo_id_(0), dwo_name_(),
       skeleton_dwo_id_(0), ranges_base_(0), addr_base_(0),
       have_checked_for_dwp_(false), dwp_path_(),
-      dwp_byte_reader_(), dwp_reader_() {}
+      dwp_byte_reader_(0), dwp_reader_(0) {}
 
+CompilationUnit::~CompilationUnit() {
+	delete dwp_byte_reader_;
+	delete dwp_reader_;
+    delete abbrevs_;
+}
+	  
 // Initialize a compilation unit from a .dwo or .dwp file.
 // In this case, we need the .debug_addr section from the
 // executable file that contains the corresponding skeleton
@@ -629,9 +635,9 @@ void CompilationUnit::ProcessSplitDwarf() {
       ElfReader* elf = new ElfReader(dwp_path_);
       int width = GetElfWidth(*elf);
       if (width != 0) {
-        dwp_byte_reader_.reset(new ByteReader(reader_->GetEndianness()));
+        dwp_byte_reader_ = new ByteReader(reader_->GetEndianness());
         dwp_byte_reader_->SetAddressSize(width);
-        dwp_reader_.reset(new DwpReader(*dwp_byte_reader_, elf));
+        dwp_reader_ = new DwpReader(*dwp_byte_reader_, elf);
         dwp_reader_->Initialize();
       } else {
         delete elf;
@@ -646,7 +652,7 @@ void CompilationUnit::ProcessSplitDwarf() {
     if (!sections.empty()) {
       found_in_dwp = true;
       CompilationUnit dwp_comp_unit(dwp_path_, sections, 0,
-                                    dwp_byte_reader_.get(), handler_);
+                                    dwp_byte_reader_, handler_);
       dwp_comp_unit.SetSplitDwarf(addr_buffer_, addr_buffer_length_, addr_base_,
                                   ranges_base_, dwo_id_);
       dwp_comp_unit.Start();

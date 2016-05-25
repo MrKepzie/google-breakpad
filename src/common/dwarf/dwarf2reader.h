@@ -554,10 +554,10 @@ class CompilationUnit {
   string dwp_path_;
 
   // ByteReader for the DWP file.
-  std::unique_ptr<ByteReader> dwp_byte_reader_;
+  ByteReader* dwp_byte_reader_;
 
   // DWP reader.
-   std::unique_ptr<DwpReader> dwp_reader_;
+   DwpReader* dwp_reader_;
 };
 
 // A Reader for a .dwp file.  Supports the fetching of DWARF debug
