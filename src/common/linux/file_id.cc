@@ -40,6 +40,7 @@
 
 #include <algorithm>
 #include <string>
+#include <stdio.h>
 
 #include "common/linux/elf_gnu_compat.h"
 #include "common/linux/elfutils.h"
