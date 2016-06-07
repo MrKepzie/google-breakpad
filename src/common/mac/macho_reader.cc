@@ -47,6 +47,11 @@
 #define CPU_TYPE_ARM_64 16777228
 #endif
 
+// not defined on 10.6
+#if !defined(S_THREAD_LOCAL_ZEROFILL)
+#define S_THREAD_LOCAL_ZEROFILL 0x12
+#endif
+
 namespace google_breakpad {
 namespace mach_o {
 
