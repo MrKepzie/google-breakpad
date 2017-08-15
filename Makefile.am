@@ -641,6 +641,7 @@ src_tools_windows_dump_syms_dwarf_dump_syms_SOURCES = \
        src/common/dwarf/bytereader.cc \
        src/common/dwarf/dwarf2diehandler.cc \
        src/common/dwarf/dwarf2reader.cc \
+       src/common/dwarf/elf_reader.cc \
        src/common/pecoff/dump_symbols.cc \
        src/common/pecoff/pecoffutils.cc \
        src/common/pecoff/pecoff_file_id.cc \
