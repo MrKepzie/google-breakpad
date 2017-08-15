@@ -204,7 +204,7 @@ class DumperLineToModule: public DwarfCUToModule::LineToModuleHandler {
   void StartCompilationUnit(const string& compilation_dir) {
     compilation_dir_ = compilation_dir;
   }
-  void ReadProgram(const char *program, uint64 length,
+  void ReadProgram(const uint8_t *program, uint64 length,
                    Module *module, std::vector<Module::Line> *lines) {
     DwarfLineToModule handler(module, compilation_dir_, lines);
     dwarf2reader::LineInfo parser(program, length, byte_reader_, &handler);
@@ -247,7 +247,7 @@ bool LoadDwarf(const string& dwarf_filename,
   dwarf2reader::SectionMap::const_iterator debug_info_entry =
       file_context.section_map().find(".debug_info");
   assert(debug_info_entry != file_context.section_map().end());
-  const std::pair<const char*, uint64>& debug_info_section =
+  const std::pair<const uint8_t*, uint64>& debug_info_section =
       debug_info_entry->second;
   // This should never have been called if the file doesn't have a
   // .debug_info section.
