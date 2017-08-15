@@ -1438,6 +1438,7 @@ am__src_tools_windows_dump_syms_dwarf_dump_syms_SOURCES_DIST =  \
 	src/common/module.cc src/common/dwarf/bytereader.cc \
 	src/common/dwarf/dwarf2diehandler.cc \
 	src/common/dwarf/dwarf2reader.cc \
+	src/common/dwarf/elf_reader.cc \
 	src/common/pecoff/dump_symbols.cc \
 	src/common/pecoff/pecoffutils.cc \
 	src/common/pecoff/pecoff_file_id.cc \
@@ -1450,6 +1451,7 @@ am__src_tools_windows_dump_syms_dwarf_dump_syms_SOURCES_DIST =  \
 @DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@	src/common/dwarf/bytereader.$(OBJEXT) \
 @DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@	src/common/dwarf/dwarf2diehandler.$(OBJEXT) \
 @DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@	src/common/dwarf/dwarf2reader.$(OBJEXT) \
+@DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@	src/common/dwarf/elf_reader.$(OBJEXT) \
 @DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@	src/common/pecoff/dump_symbols.$(OBJEXT) \
 @DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@	src/common/pecoff/pecoffutils.$(OBJEXT) \
 @DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@	src/common/pecoff/pecoff_file_id.$(OBJEXT) \
@@ -2382,6 +2384,7 @@ TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 @DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@       src/common/dwarf/bytereader.cc \
 @DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@       src/common/dwarf/dwarf2diehandler.cc \
 @DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@       src/common/dwarf/dwarf2reader.cc \
+@DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@       src/common/dwarf/elf_reader.cc \
 @DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@       src/common/pecoff/dump_symbols.cc \
 @DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@       src/common/pecoff/pecoffutils.cc \
 @DISABLE_TOOLS_FALSE@@WINDOWS_HOST_TRUE@       src/common/pecoff/pecoff_file_id.cc \
@@ -4412,6 +4415,9 @@ src/tools/linux/symupload/sym_upload.$(OBJEXT):  \
 src/tools/linux/symupload/sym_upload$(EXEEXT): $(src_tools_linux_symupload_sym_upload_OBJECTS) $(src_tools_linux_symupload_sym_upload_DEPENDENCIES) $(EXTRA_src_tools_linux_symupload_sym_upload_DEPENDENCIES) src/tools/linux/symupload/$(am__dirstamp)
 	@rm -f src/tools/linux/symupload/sym_upload$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(src_tools_linux_symupload_sym_upload_OBJECTS) $(src_tools_linux_symupload_sym_upload_LDADD) $(LIBS)
+src/common/dwarf/elf_reader.$(OBJEXT):  \
+	src/common/dwarf/$(am__dirstamp) \
+	src/common/dwarf/$(DEPDIR)/$(am__dirstamp)
 src/common/pecoff/$(am__dirstamp):
 	@$(MKDIR_P) src/common/pecoff
 	@: > src/common/pecoff/$(am__dirstamp)
@@ -4538,6 +4544,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/common/dwarf/$(DEPDIR)/bytereader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/common/dwarf/$(DEPDIR)/dwarf2diehandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/common/dwarf/$(DEPDIR)/dwarf2reader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/common/dwarf/$(DEPDIR)/elf_reader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/common/dwarf/$(DEPDIR)/src_common_dumper_unittest-bytereader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/common/dwarf/$(DEPDIR)/src_common_dumper_unittest-bytereader_unittest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/common/dwarf/$(DEPDIR)/src_common_dumper_unittest-cfi_assembler.Po@am__quote@
