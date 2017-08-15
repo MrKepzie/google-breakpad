@@ -32,7 +32,11 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifndef _WIN32
 #include <sys/mman.h>
+#else
+#include <windows.h>
+#endif
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
@@ -66,6 +70,24 @@
 #define __BYTE_ORDER __BYTE_ORDER__
 #endif  // __BYTE_ORDER
 #endif  // __APPLE__
+
+#ifdef _WIN32
+int
+getpagesize (void)
+{
+    SYSTEM_INFO system_info;
+    GetSystemInfo (&system_info);
+    return system_info.dwPageSize;
+}
+
+#ifdef __x86_64__
+# define __WORDSIZE     64
+# define __WORDSIZE_COMPAT32    1
+#else
+# define __WORDSIZE     32
+#endif
+
+#endif
 
 // compile-time endianness checking found on:
 // http://stackoverflow.com/questions/2100331/c-macro-definition-to-determine-big-endian-or-little-endian-machine
@@ -224,12 +246,12 @@ class ElfSectionReader {
     hMap_ = CreateFileMapping(h, NULL, PAGE_READONLY,0, 0, NULL);
     // XXX: should also use SEC_IMAGE_NO_EXECUTE on Windows 6.2 or later
     if (!hMap_) {
-        return NULL;
+        return;
     }
     contents_aligned_ = MapViewOfFile(hMap_, FILE_MAP_READ, 0, 0, 0);
     if (!contents_aligned_) {
         CloseHandle(hMap_);
-        return NULL;
+        return;
     }
 
 #endif
@@ -432,8 +454,8 @@ class ElfReaderImpl {
   static bool IsArchElfFile(int fd, string *error) {
     unsigned char header[EI_NIDENT];
 #ifdef _WIN32
-    int bytesRead;
-    if (ReadFile(_get_osfhandle(fd), header, sizeof(header), &bytesRead, 0) && bytesRead == sizeof(header)) {
+    DWORD  bytesRead;
+    if (ReadFile((HANDLE)_get_osfhandle(fd), (void*)header, sizeof(header), &bytesRead, 0) && bytesRead == sizeof(header)) {
 #else
     if (pread(fd, header, sizeof(header), 0) != sizeof(header)) {
 #endif
@@ -457,7 +479,7 @@ class ElfReaderImpl {
       endian = (int)O32_LITTLE_ENDIAN;
     else if (header[EI_DATA] == ELFDATA2MSB)
       endian = (int)O32_BIG_ENDIAN;
-    if (endian != O32_HOST_ORDER) {
+    if (endian != (int)O32_HOST_ORDER) {
       if (error != NULL) *error = "Different byte order";
       return false;
     }
@@ -938,8 +960,8 @@ class ElfReaderImpl {
     // Read in the global ELF header.
 #ifdef _WIN32
       {
-          int bytesRead;
-          if (ReadFile(_get_osfhandle(fd), header_, sizeof(header_), &bytesRead, 0) && bytesRead == sizeof(header_)) {
+          DWORD bytesRead;
+          if (ReadFile((HANDLE)_get_osfhandle(fd), (void*)&header_, sizeof(header_), &bytesRead, 0) && bytesRead == sizeof(header_)) {
               return false;
           }
       }
@@ -968,8 +990,8 @@ class ElfReaderImpl {
       // See: http://www.sco.com/developers/gabi/2003-12-17/ch4.sheader.html
 #ifdef _WIN32
         {
-            int bytesRead;
-            if (ReadFile(_get_osfhandle(fd), first_section_header_, sizeof(first_section_header_), &bytesRead, 0) && bytesRead == sizeof(first_section_header_)) {
+            DWORD bytesRead;
+            if (ReadFile((HANDLE)_get_osfhandle(fd), (void*)&first_section_header_, sizeof(first_section_header_), &bytesRead, 0) && bytesRead == sizeof(first_section_header_)) {
                 return false;
             }
         }
@@ -991,8 +1013,8 @@ class ElfReaderImpl {
           OVERLAPPED ol;
           memset(&ol, 0, sizeof(OVERLAPPED));
           ol.Offset = header_.e_shoff;
-          int bytesRead;
-          if (ReadFile(_get_osfhandle(fd), section_headers_, section_headers_size, &bytesRead, &ol) && bytesRead == sizeof(section_headers_size)) {
+          DWORD bytesRead;
+          if (ReadFile((HANDLE)_get_osfhandle(fd), (void*)section_headers_, section_headers_size, &bytesRead, &ol) && bytesRead == sizeof(section_headers_size)) {
               return false;
           }
       }
