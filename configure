@@ -634,6 +634,8 @@ DISABLE_PROCESSOR_FALSE
 DISABLE_PROCESSOR_TRUE
 ANDROID_HOST_FALSE
 ANDROID_HOST_TRUE
+WINDOWS_HOST_FALSE
+WINDOWS_HOST_TRUE
 LINUX_HOST_FALSE
 LINUX_HOST_TRUE
 PTHREAD_CFLAGS
@@ -6476,13 +6478,25 @@ case $host in
   *-*-linux* | *-android* )
     LINUX_HOST=true
     ;;
+  *-*-cygwin* | *-*-mingw* )
+    WINDOWS_HOST=true
+    ;;
 esac
+
  if test x$LINUX_HOST = xtrue; then
   LINUX_HOST_TRUE=
   LINUX_HOST_FALSE='#'
 else
   LINUX_HOST_TRUE='#'
   LINUX_HOST_FALSE=
+fi
+
+ if test x$WINDOWS_HOST = xtrue; then
+  WINDOWS_HOST_TRUE=
+  WINDOWS_HOST_FALSE='#'
+else
+  WINDOWS_HOST_TRUE='#'
+  WINDOWS_HOST_FALSE=
 fi
 
 
@@ -6740,6 +6754,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${LINUX_HOST_TRUE}" && test -z "${LINUX_HOST_FALSE}"; then
   as_fn_error $? "conditional \"LINUX_HOST\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${WINDOWS_HOST_TRUE}" && test -z "${WINDOWS_HOST_FALSE}"; then
+  as_fn_error $? "conditional \"WINDOWS_HOST\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${ANDROID_HOST_TRUE}" && test -z "${ANDROID_HOST_FALSE}"; then
