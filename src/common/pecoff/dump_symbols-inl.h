@@ -237,7 +237,7 @@ bool LoadDwarf(const string& dwarf_filename,
   for (int i = 0; i < num_sections; ++i) {
     const Shdr section = ObjectFileReader::FindSectionByIndex(header, i);
     string name = ObjectFileReader::GetSectionName(header, section);
-    const char* contents = reinterpret_cast<const char *>(ObjectFileReader::GetSectionPointer(header, section));
+    const uint8_t* contents = reinterpret_cast<const uint8_t *>(ObjectFileReader::GetSectionPointer(header, section));
     file_context.AddSectionToSectionMap(name, contents,
                                         ObjectFileReader::GetSectionSize(header, section));
   }
@@ -314,7 +314,7 @@ bool LoadDwarfCFI(const string& dwarf_filename,
       dwarf2reader::ENDIANNESS_BIG : dwarf2reader::ENDIANNESS_LITTLE;
 
   // Find the call frame information and its size.
-  const char* cfi = reinterpret_cast<const char *>(ObjectFileReader::GetSectionPointer(header, section));
+  const uint8_t* cfi = reinterpret_cast<const uint8_t *>(ObjectFileReader::GetSectionPointer(header, section));
   size_t cfi_size = ObjectFileReader::GetSectionSize(header, section);
 
   // Plug together the parser, handler, and their entourages.
